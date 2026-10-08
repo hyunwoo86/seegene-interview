@@ -689,6 +689,29 @@
       gap: 9px;
     }
 
+    .code-block {
+      margin: 14px 0;
+      overflow-x: auto;
+      color: #dbeafe;
+      background: #102235;
+      border: 1px solid #28445e;
+      border-radius: 12px;
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 18px;
+      white-space: pre;
+      font: 13px/1.65 Consolas, "Cascadia Code", monospace;
+    }
+
+    .thread-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
     .footer {
       padding: 20px 6px;
       color: var(--muted);
@@ -708,7 +731,7 @@
       .page { width: min(100% - 18px, 1180px); padding-top: 9px; }
       .hero, section { padding: 22px; border-radius: 16px; }
       .topic-grid, .stat-grid, .priority-grid, .flow, .week { grid-template-columns: 1fr; }
-      .simple-flow, .term-grid, .bank-grid, .system-map .branch { grid-template-columns: 1fr; }
+      .simple-flow, .term-grid, .bank-grid, .system-map .branch, .thread-grid { grid-template-columns: 1fr; }
       .simple-flow div:not(:last-child)::after { content: "↓"; right: 50%; bottom: -17px; }
       .allocation-row { grid-template-columns: 1fr 44px; }
       .allocation-row .track { grid-column: 1 / -1; grid-row: 2; }
@@ -756,6 +779,7 @@
         <a href="#pcr-basic">PCR 쉬운 설명</a>
         <a href="#pcr">dRAST와 PCR 비교</a>
         <a href="#system-sequence">전체 로직·시퀀스</a>
+        <a href="#ui-thread">버튼·UI 스레드</a>
         <a href="#pressure-drill">집요한 꼬리질문</a>
         <a href="#questions">예상 기술 질문</a>
         <a href="#interviewer-bank">추가 면접관 질문</a>
@@ -1099,6 +1123,136 @@
           <h3>7. 면접용 90초 답변</h3>
           <div class="answer">“전체 구조는 검체별 상태기계와 작업 큐를 중심으로 동작합니다. 검사가 등록되면 분주, 배양, 촬영, 분석과 결과 생성에 필요한 작업을 순서대로 생성합니다. Orchestrator는 각 작업의 선행 조건과 실행 시간을 확인하고 피펫이나 카메라 같은 공유 자원이 사용 가능한 경우에만 작업을 실행합니다.<br><br>장비 제어는 앱이 직접 드라이버를 구동하는 구조가 아니라 외주 하드웨어 미들웨어와 TCP 명령·응답으로 연동했습니다. 명령 수신 ACK와 실제 동작 완료를 구분하고, 완료가 확인된 뒤 검사 상태를 JSON과 SQLite에 저장하고 다음 작업으로 이동했습니다. 영상은 카메라 이동과 초점 조정 후 촬영해 별도 분석 프로그램으로 전달하고 결과를 받아 검사 흐름에 반영했습니다.<br><br>통신이 끊기거나 프로그램이 종료되면 저장된 상태만 믿고 다시 실행하지 않고 실제 장비 상태와 비교했습니다. 완료가 확인된 안전 지점부터 재개하고, 분주처럼 중복 동작이 위험하면서 결과가 불명확한 단계는 자동 재시도하지 않고 보류나 안전정지를 우선했습니다. 외부 검사 상태는 Regist, OnGoing, Complete, Eject 순서로 관리했습니다.”</div>
           <div class="evidence"><strong>면접 전 재확인</strong>JSON과 SQLite의 정확한 역할 분담, 실제 자동 재개 가능 단계, 통신 명령 식별자 구조, 프로젝트 인원과 본인 작성 범위</div>
+        </section>
+
+        <section id="ui-thread">
+          <h2>버튼 클릭과 장비 동작을 안전하게 연결하는 방법</h2>
+          <div class="positioning">버튼 클릭 함수는 UI 상태와 작업 시작·종료를 관리하고, 실제 장비 동작은 별도의 비동기 함수에서 수행</div>
+
+          <div class="thread-grid">
+            <article class="priority must">
+              <span class="pill">UI 스레드</span>
+              <h3>화면 담당</h3>
+              <ul>
+                <li>버튼 클릭 이벤트</li>
+                <li>버튼 활성화·비활성화</li>
+                <li>상태 문구와 진행률 표시</li>
+                <li>ObservableCollection 변경</li>
+              </ul>
+            </article>
+            <article class="priority plus">
+              <span class="pill">백그라운드·비동기 작업</span>
+              <h3>실제 동작 담당</h3>
+              <ul>
+                <li>TCP 명령·응답</li>
+                <li>장비 완료 대기</li>
+                <li>영상 처리</li>
+                <li>DB 저장</li>
+              </ul>
+            </article>
+          </div>
+
+          <h3>1. 실행 흐름</h3>
+          <div class="simple-flow">
+            <div>버튼 클릭</div>
+            <div>중복 클릭 차단</div>
+            <div>버튼 비활성화</div>
+            <div>장비 작업 await</div>
+            <div>결과·오류 표시</div>
+            <div>버튼 원상복구</div>
+          </div>
+
+          <h3>2. 권장 코드</h3>
+          <div class="code-block"><pre>private bool _isRunning;
+
+private async void StartButton_Click(
+    object sender,
+    RoutedEventArgs e)
+{
+    if (_isRunning)
+        return;
+
+    _isRunning = true;
+    StartButton.IsEnabled = false;
+    StartButton.Content = "검사 중";
+    StatusText.Text = "검사를 시작합니다.";
+
+    try
+    {
+        var progress = new Progress&lt;int&gt;(value =&gt;
+        {
+            ProgressBar.Value = value;
+            StatusText.Text = $"검사 진행률: {value}%";
+        });
+
+        var result = await ExecuteInspectionAsync(progress);
+
+        StatusText.Text = result;
+    }
+    catch (Exception ex)
+    {
+        StatusText.Text = $"검사 실패: {ex.Message}";
+    }
+    finally
+    {
+        _isRunning = false;
+        StartButton.IsEnabled = true;
+        StartButton.Content = "검사 시작";
+    }
+}</pre></div>
+          <div class="callout"><strong>`async void`가 허용되는 곳</strong>: 버튼 클릭 같은 이벤트 핸들러. 실제 장비 작업 함수는 `async Task` 또는 `async Task&lt;T&gt;`로 작성해 호출자가 완료와 예외를 기다릴 수 있게 합니다.</div>
+
+          <h3>3. 실제 장비 작업 함수</h3>
+          <div class="code-block"><pre>private async Task&lt;string&gt; ExecuteInspectionAsync(
+    IProgress&lt;int&gt; progress)
+{
+    progress.Report(10);
+    await _device.CheckStatusAsync();
+
+    progress.Report(30);
+    await _device.DispenseAsync();
+
+    progress.Report(60);
+    await _device.CaptureAsync();
+
+    progress.Report(80);
+    await _analyzer.AnalyzeAsync();
+
+    progress.Report(100);
+    return "검사가 완료되었습니다.";
+}</pre></div>
+          <p>`Progress&lt;int&gt;`를 UI 스레드에서 생성했기 때문에 백그라운드 작업이 `Report()`를 호출해도 진행률 변경 코드는 UI 스레드에서 실행됩니다.</p>
+
+          <h3>4. 기존 함수가 동기식으로 오래 걸리는 경우</h3>
+          <div class="code-block"><pre>private async Task ExecuteLegacyInspectionAsync()
+{
+    StatusText.Text = "검사 중";
+
+    await Task.Run(() =&gt;
+    {
+        _device.RunInspection();
+
+        // 여기에서 WPF 컨트롤을 직접 변경하면 안 됨
+    });
+
+    // await 뒤 UI 스레드로 돌아와 화면 변경
+    StatusText.Text = "검사 완료";
+}</pre></div>
+          <div class="callout danger"><strong>금지</strong>: UI 스레드에서 `Thread.Sleep()`, `.Wait()`, `.Result` 사용. 화면이 멈추거나 교착상태가 발생할 수 있습니다.</div>
+
+          <h3>5. Dispatcher가 필요한 경우</h3>
+          <p>버튼 클릭 함수는 UI 스레드에서 시작하므로 일반적인 `await` 뒤에는 UI 스레드로 돌아옵니다. 하지만 TCP 수신 이벤트처럼 처음부터 백그라운드 스레드에서 호출된 콜백은 Dispatcher를 통해 화면 변경을 전달해야 합니다.</p>
+          <div class="code-block"><pre>private void OnDeviceMessageReceived(DeviceMessage message)
+{
+    Application.Current.Dispatcher.InvokeAsync(() =&gt;
+    {
+        StatusText.Text = message.Status;
+        ProgressBar.Value = message.Progress;
+    });
+}</pre></div>
+
+          <h3>6. 면접 답변</h3>
+          <div class="answer">“버튼 클릭 이벤트에서는 중복 실행을 막고 버튼과 진행 상태를 관리한 뒤, 실제 장비 동작은 `Task`를 반환하는 비동기 함수로 분리했습니다. TCP 통신과 장비 완료 대기 중에는 UI 스레드를 점유하지 않도록 `await`를 사용했습니다. 작업 결과는 `Progress&lt;T&gt;`로 전달했고, TCP 수신 콜백처럼 백그라운드 스레드에서 직접 들어오는 화면 변경만 Dispatcher를 통해 UI 스레드에 전달했습니다. 오류가 발생해도 `finally`에서 버튼 상태가 복구되도록 구성했습니다.”</div>
         </section>
 
         <section id="pressure-drill">
