@@ -135,6 +135,8 @@
     .side {
       position: sticky;
       top: 18px;
+      max-height: calc(100vh - 36px);
+      overflow-y: auto;
       padding: 18px;
       background: rgba(255,255,255,.9);
       backdrop-filter: blur(10px);
@@ -162,6 +164,13 @@
     }
 
     .side a:hover { background: var(--sky); color: var(--blue); }
+
+    .side .toc-group { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    .side .toc-group + .toc-group { border-top: 1px solid var(--line); }
+    .side .toc-group summary { padding: 12px 4px; color: var(--navy); font-size: 14px; font-weight: 700; cursor: pointer; }
+    .side .toc-group a { padding: 6px 10px 6px 18px; font-size: 13px; }
+    .toc-links { padding-bottom: 10px; }
+    .side a:focus-visible, .side summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
     main { min-width: 0; }
 
@@ -721,7 +730,7 @@
 
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
-      .side { position: static; display: none; }
+      .side { position: static; max-height: none; }
       .stat-grid, .priority-grid { grid-template-columns: repeat(2, 1fr); }
       .week { grid-template-columns: repeat(2, 1fr); }
     }
@@ -770,24 +779,51 @@
 
     <div class="layout">
       <nav class="side" aria-label="문서 목차">
-        <strong>Contents</strong>
-        <a href="#strategy">핵심 전략</a>
-        <a href="#allocation">준비 비중</a>
-        <a href="#priority">강점과 공백</a>
-        <a href="#topics">기술 준비 8개 영역</a>
-        <a href="#design">시스템 설계 문제</a>
-        <a href="#web-answer">Web 경험 답변</a>
-        <a href="#pcr-basic">PCR 쉬운 설명</a>
-        <a href="#pcr">dRAST와 PCR 비교</a>
-        <a href="#system-sequence">전체 로직·시퀀스</a>
-        <a href="#ui-thread">버튼·UI 스레드</a>
-        <a href="#turnover">이직 사유 답변</a>
-        <a href="#mock-interview">모의면접 16문항</a>
-        <a href="#pressure-drill">집요한 꼬리질문</a>
-        <a href="#questions">예상 기술 질문</a>
-        <a href="#interviewer-bank">추가 면접관 질문</a>
-        <a href="#schedule">7일 준비 일정</a>
-        <a href="#boundary">사실관계 경계</a>
+        <strong>Contents · 목차</strong>
+        <details class="toc-group" open>
+          <summary>01 준비 방향과 일정</summary>
+          <div class="toc-links">
+            <a href="#strategy">핵심 전략</a>
+            <a href="#allocation">준비 비중</a>
+            <a href="#priority">강점과 공백</a>
+            <a href="#schedule">7일 준비 일정</a>
+            <a href="#today">오늘 바로 할 일</a>
+          </div>
+        </details>
+        <details class="toc-group">
+          <summary>02 기술·도메인 이해</summary>
+          <div class="toc-links">
+            <a href="#topics">기술 준비 8개 영역</a>
+            <a href="#pcr-basic">PCR 쉬운 설명</a>
+            <a href="#pcr">dRAST와 PCR 비교</a>
+            <a href="#system-sequence">전체 로직·시퀀스</a>
+            <a href="#ui-thread">버튼·UI 스레드</a>
+            <a href="#design">시스템 설계 문제</a>
+          </div>
+        </details>
+        <details class="toc-group">
+          <summary>03 경험과 이직 답변</summary>
+          <div class="toc-links">
+            <a href="#web-answer">Web 경험 답변</a>
+            <a href="#turnover">이직 사유 답변</a>
+          </div>
+        </details>
+        <details class="toc-group">
+          <summary>04 실전 면접 연습</summary>
+          <div class="toc-links">
+            <a href="#questions">예상 기술 질문</a>
+            <a href="#interviewer-bank">추가 면접관 질문</a>
+            <a href="#pressure-drill">집요한 꼬리질문</a>
+            <a href="#mock-interview">모의면접 16문항</a>
+          </div>
+        </details>
+        <details class="toc-group">
+          <summary>05 사실 확인과 근거</summary>
+          <div class="toc-links">
+            <a href="#boundary">사실관계 경계</a>
+            <a href="#sources">근거 자료</a>
+          </div>
+        </details>
       </nav>
 
       <main>
@@ -1702,7 +1738,7 @@ private async void StartButton_Click(
           </ul>
         </section>
 
-        <section>
+        <section id="sources">
           <h2>근거 자료</h2>
           <ul>
             <li>씨젠 의료 자동화 시스템 SW 개발자 공고 원문</li>
