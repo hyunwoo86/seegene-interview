@@ -831,8 +831,8 @@
             <a href="#enclony">면접 개요</a>
             <a href="#enclony-fit">공고 대비 강점과 공백</a>
             <a href="#enclony-answers">자기소개·지원동기·이직</a>
-            <a href="#enclony-company">회사 정보와 역질문</a>
-            <a href="#enclony-questions">예상 질문 18개</a>
+            <a href="#enclony-company">회사 정보와 역질문 7개</a>
+            <a href="#enclony-questions">예상 질문 20개</a>
             <a href="#enclony-boundary">사실관계 경계</a>
           </div>
         </details>
@@ -1910,13 +1910,16 @@ private async void StartButton_Click(
             <li>장비 예: 시간당 최대 42.5만 정, 2D 카메라 10대 + 3D 카메라 2대 구성 사례(호주)</li>
             <li>비상장. IPO 목표가 2024년에서 2026년으로 밀림</li>
             <li>후기: 잡플래닛 3.3(47건)·블라인드 2.5(15건). 장점 워라밸, 단점 급여·경영진·체계. SW 직무 후기는 따로 확인 못 함</li>
-            <li>면접 사례(2025): 대표·인사 담당자·기술연구소장 3인 대면</li>
+            <li>면접 사례(2025): 대표·인사 담당자·기술연구소장 3인 대면, 분위기 편안. 질문 예: 왜 중소기업, 공고에 없는 직무, 출장 거부감</li>
+            <li>SW 공고 핵심 우대: C# WPF ↔ C++ 엔진 DLL 연동(P/Invoke·C++/CLI). 장비 한 대에 카메라 10~15대</li>
           </ul>
           <details class="question-group" open>
-            <summary>면접관에게 물어볼 질문 5개</summary>
+            <summary>면접관에게 물어볼 질문 7개</summary>
             <div class="detail-body bank-grid">
               <article class="mini-qa"><h4>출장</h4><p>국내외 FAT/SAT 셋업 출장은 1년에 몇 번, 한 번에 얼마나 가나요? 독일·일본 법인은 어디까지 맡나요?</p></article>
               <article class="mini-qa"><h4>SW 조직</h4><p>비전·제어 SW 팀은 몇 명이고, 코드리뷰·Git/Jira·테스트는 어떻게 하나요?</p></article>
+              <article class="mini-qa"><h4>팀 체계</h4><p>SW 팀은 몇 명이고, 팀장은 어떤 체계로 되어 있나요?</p><div class="confirm">2025년에 SW 팀장 공고가 두 번 올라옴. 공석 여부를 직접 묻지 말고 체계로 묻는다.</div></article>
+              <article class="mini-qa"><h4>비전 라이브러리</h4><p>영상 검사 알고리즘은 자체 개발인가요, Halcon 같은 상용 라이브러리를 쓰나요?</p></article>
               <article class="mini-qa"><h4>업무 비중</h4><p>입사 후 첫 6개월은 기존 PLANET EV 유지보수와 신규 개발 중 어느 쪽 비중이 큰가요? C++ 엔진·CUDA는 누가 맡고 있나요?</p></article>
               <article class="mini-qa"><h4>검증 문서</h4><p>공고에 GAMP 5가 있는데, 검증 문서 작업을 개발자가 얼마나 맡나요?</p></article>
               <article class="mini-qa"><h4>보상·IPO</h4><p>처우협상 단계에서: 식대 포함 여부, 성과급 지급 이력, IPO 일정과 스톡옵션 계획</p><div class="confirm">보상 질문은 실무 면접에서 먼저 꺼내지 않는다.</div></article>
@@ -1956,13 +1959,15 @@ private async void StartButton_Click(
             </div>
           </details>
           <details class="question-group">
-            <summary>④ 협업·마무리 — 5문항</summary>
+            <summary>④ 협업·마무리 — 7문항</summary>
             <div class="detail-body bank-grid">
               <article class="mini-qa"><h4>14. 제조·품질·기계 부서와 협업은?</h4><p>“퀀타매트릭스에서 HW팀이 정의한 명령으로 장비를 제어했고, 장비를 직접 보면서 히팅과 부품 체결 문제를 확인했습니다. 결핵연구원·녹십자 납품 장비에서는 연구원 요청을 받아 기능을 수정했습니다.”</p></article>
               <article class="mini-qa"><h4>15. 의료기기 경험이 산업 검사장비에 도움이 되나요?</h4><p>“결과를 믿을 수 있게 만드는 습관이 남았습니다. 요구사항부터 시험 결과까지 추적하고, 바꾼 부분의 영향 범위를 확인하는 방식은 검사장비에서도 그대로 쓸 수 있습니다.”</p></article>
               <article class="mini-qa"><h4>16. GAMP 5·CSV 경험은?</h4><p>“GAMP 5 실무는 해 보지 않았습니다. 대신 의료기기에서 IEC 62304에 맞춰 요구사항부터 시험 결과까지 추적하고, FDA 대응 V&amp;V 자료를 보완했습니다. 요구사항을 시험으로 증명하는 방식은 같아서 빠르게 맞출 수 있다고 봅니다.”</p><div class="confirm">GAMP 5·Part 11 실무를 했다고 바꾸지 않는다.</div></article>
               <article class="mini-qa"><h4>17. 해외 셋업 출장 가능한가요?</h4><p>“가능합니다. 퀀타매트릭스에서 FDA 대응 준비로 미국 현지 지원을 다녀왔고, 납품 장비의 현장 요청도 직접 대응했습니다.”</p><div class="confirm">[확인] 출장 빈도·기간을 되물어 본다. 공개 자료로는 확인 못 함.</div></article>
-              <article class="mini-qa"><h4>18. 마지막으로 질문 있나요?</h4><p>“입사하면 처음 맡게 될 장비와 카메라·구동부 구성이 궁금합니다. C++ 엔진과 C# UI는 어떻게 나뉘어 있는지, 팀 구성은 어떻게 되는지도 여쭙고 싶습니다.”</p></article>
+              <article class="mini-qa"><h4>18. 왜 대기업이 아니라 중소기업인가요?</h4><p>“회사 규모보다 제가 가장 잘하는 일을 깊게 할 수 있는지가 기준입니다. 엔클로니는 카메라·구동부·검사 SW를 한 장비 안에서 직접 다루고, 제 경험이 바로 쓰일 수 있는 곳입니다. 퀀타매트릭스도 작은 규모에서 장비를 처음부터 제품화까지 만든 회사라 그 환경이 익숙합니다.”</p><div class="confirm">2025 영상처리 직무 면접 후기에 나온 질문.</div></article>
+              <article class="mini-qa"><h4>19. 공고에 없는 다른 일을 맡는다면?</h4><p>“장비 SW는 원래 경계가 넓다고 생각합니다. 퀀타매트릭스에서도 장비 SW와 함께 시험 도구, Emulator, 전시용 데모, 현장 요청 대응까지 했습니다. 제품에 필요한 일이면 맡겠습니다. 다만 제가 가장 크게 기여할 수 있는 건 장비 제어와 영상 쪽이라는 점은 말씀드리고 싶습니다.”</p><div class="confirm">2025 영상처리 직무 면접 후기에 나온 질문.</div></article>
+              <article class="mini-qa"><h4>20. 마지막으로 질문 있나요?</h4><p>“입사하면 처음 맡게 될 장비와 카메라·구동부 구성이 궁금합니다. C++ 엔진과 C# UI는 어떻게 나뉘어 있는지, 팀 구성은 어떻게 되는지도 여쭙고 싶습니다.”</p></article>
             </div>
           </details>
         </section>
