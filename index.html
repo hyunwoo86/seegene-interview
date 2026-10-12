@@ -825,6 +825,17 @@
             <a href="#sources">근거 자료</a>
           </div>
         </details>
+        <details class="toc-group">
+          <summary>06 엔클로니 (10/16)</summary>
+          <div class="toc-links">
+            <a href="#enclony">면접 개요</a>
+            <a href="#enclony-fit">공고 대비 강점과 공백</a>
+            <a href="#enclony-answers">자기소개·지원동기·이직</a>
+            <a href="#enclony-company">회사 정보와 역질문</a>
+            <a href="#enclony-questions">예상 질문 18개</a>
+            <a href="#enclony-boundary">사실관계 경계</a>
+          </div>
+        </details>
       </nav>
 
       <main>
@@ -1819,6 +1830,154 @@ private async void StartButton_Click(
             <li>기술면접 준비 원본 노트</li>
           </ul>
         </section>
+        <section id="enclony">
+          <h2>엔클로니 · 검사장비 제어·비전 SW (10/16 금)</h2>
+          <p class="lead">공고 제목은 “검사장비 고속 제어 및 비전 SW 개발자(경력)”입니다. 씨젠과 달리 의료 규제보다 <strong>카메라·모터 제어와 영상처리</strong>가 중심이라, 퀀타매트릭스 QDST·dRAST 경험을 맨 앞에 둡니다.</p>
+          <div class="callout danger"><strong>[확인]</strong> 면접 시간·형식(대면/화상), 면접관 구성, 코딩테스트·과제 여부는 인사담당자에게 묻기. 절차는 서류 → 인터뷰(실무진·임원) → 처우협상 → 최종합격. 근무지는 서울 구로구 디지털로 243.</div>
+        </section>
+
+        <section id="enclony-fit">
+          <h2>공고 대비 강점과 공백</h2>
+          <div class="priority-grid">
+            <article class="priority must">
+              <span class="pill">반드시 증명</span>
+              <h3>직접 경험</h3>
+              <ul>
+                <li>C# WPF/MVVM 장비 제어 화면</li>
+                <li>로봇암·카메라 이동축·모터·온도 제어(QDST)</li>
+                <li>Ximea·뷰웍스 카메라 영상 획득</li>
+                <li>OpenCV 영상처리(Projection·Sobel·Thresholding·Template matching)</li>
+                <li>TCP/IP 장비 통신, 중단 후 복구</li>
+              </ul>
+            </article>
+            <article class="priority gap">
+              <span class="pill">정직하게 보완</span>
+              <h3>경험 공백</h3>
+              <ul>
+                <li>C/C++ 주력 개발(유지보수·도구 수준)</li>
+                <li>고속 카메라 이미지 버퍼·대용량 병렬 처리</li>
+                <li>CUDA·TensorRT GPU 최적화</li>
+                <li>MES 인터페이스</li>
+                <li>다축 정밀 모션, RS-485·Modbus</li>
+              </ul>
+            </article>
+            <article class="priority plus">
+              <span class="pill">우대 일치</span>
+              <h3>추가 강점</h3>
+              <ul>
+                <li>바이오 검사장비 SW 7년 반(우대사항)</li>
+                <li>시험 도구·Emulator로 장비 없이 1차 검증</li>
+                <li>장비 히팅·체결 문제를 직접 확인한 경험</li>
+                <li>HW팀·연구원과 협업, 납품 장비 요청 반영</li>
+                <li>의료기기 수준 검증·보안 기능 경험</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="enclony-answers">
+          <h2>엔클로니 핵심 답변</h2>
+          <details class="drill" open>
+            <summary><span class="num">1분</span> 자기소개</summary>
+            <div class="detail-body">
+              <div class="answer">“안녕하십니까, 13년차 장비 SW 개발자 정현우입니다. 가장 오래 한 일은 퀀타매트릭스에서 7년 반 동안 진단장비 QDST와 dRAST의 Windows 프로그램을 만든 것입니다. QDST에서는 로봇암과 카메라 이동축, 모터·온도를 제어하고 Ximea 카메라로 120개 슬롯 키트 영상을 찍어 OpenCV로 Focus mark를 찾았습니다. dRAST 3.0에서는 뷰웍스 카메라 2대로 영상을 얻고, Projection으로 초점 위치를 구해 항상 같은 위치로 이동하도록 만들었습니다. 장비가 부족할 때는 PC에서 동작을 먼저 확인하는 Emulator와 통합시험 도구도 직접 만들었습니다. 최근 2년은 의료영상 장비에서 FDA 대응 보안 기능과 검증을 했습니다. 이제 다시 카메라와 구동부를 다루는 검사장비 SW에서 일하고 싶어 지원했습니다.”</div>
+              <div class="evidence"><strong>원칙</strong>숫자는 13년·7년 반·120개·2대만. FDA 이야기는 한 문장으로 끝낸다.</div>
+            </div>
+          </details>
+          <details class="drill">
+            <summary><span class="num">30초</span> 왜 엔클로니입니까?</summary>
+            <div class="detail-body">
+              <div class="answer">“공고의 장비 구동·시퀀스 제어, 카메라 인터페이스, 모터 제어, WPF MVVM UI가 제가 QDST와 dRAST에서 해 온 일과 그대로 겹칩니다. 엔클로니 장비가 제약 정제·캡슐의 품질을 영상으로 검사하는 장비인데, 저도 7년 반 동안 진단 키트를 카메라로 찍고 판정하는 바이오 검사장비를 만들었습니다. 결과를 믿을 수 있어야 하는 장비라는 점이 같습니다. 의료영상 쪽에서 2년을 보내면서 제 강점이 가장 잘 쓰이는 곳은 장비를 직접 움직이고 영상을 얻는 SW라는 걸 확인했습니다.”</div>
+              <div class="confirm">제품(PLANET EV 계열)은 이름만 언급하고, 특정 장비를 맡겠다고 단정하지 않는다.</div>
+            </div>
+          </details>
+          <details class="drill">
+            <summary><span class="num">1분</span> 이직 사유</summary>
+            <div class="detail-body">
+              <div class="answer">“퀀타매트릭스에서 7년 반 동안 장비 SW를 처음부터 제품화까지 맡았고, 전사 희망퇴직 시기에 정리하고 나왔습니다. 이후 제노레이와 레이와트에서 FDA 사이버보안과 검증을 실무로 쌓았습니다. 그 과정에서 제 강점이 가장 살아나는 일은 장비 제어와 영상 획득이라는 걸 확인했고, 그 일을 다시 오래 하고 싶습니다.”</div>
+              <div class="defense"><strong>꼬리 질문</strong>“여기도 금방 나가는 거 아닌가요?” → 퀀타매트릭스에서 7년 반을 일했습니다. 맞는 일을 하면 오래 있는 사람입니다.</div>
+            </div>
+          </details>
+        </section>
+
+        <section id="enclony-company">
+          <h2>엔클로니 회사 정보 (10/13 조사)</h2>
+          <p class="lead">제약 정제·캡슐 외관 비전검사기와 레이저 인쇄기(PLANET EV·EVS·DLPI)를 만드는 회사입니다. 반도체·2차전지 장비 회사가 아닙니다.</p>
+          <ul>
+            <li>2013년 설립, 대표 이경호(반도체 검사장비 출신), 직원 60~72명, 본사 구로</li>
+            <li>매출 2025년 별도 179억·연결 202억, 영업이익 22.7억(2022년 적자 → 2023년 흑자)</li>
+            <li>고객: 화이자·얀센·애브비·마일란·FAREVA. 수출: 일본·인도·중국·독일·호주·브라질. 독일·일본 법인</li>
+            <li>장비 예: 시간당 최대 42.5만 정, 2D 카메라 10대 + 3D 카메라 2대 구성 사례(호주)</li>
+            <li>비상장. IPO 목표가 2024년에서 2026년으로 밀림</li>
+            <li>후기: 잡플래닛 3.3(47건)·블라인드 2.5(15건). 장점 워라밸, 단점 급여·경영진·체계. SW 직무 후기는 따로 확인 못 함</li>
+            <li>면접 사례(2025): 대표·인사 담당자·기술연구소장 3인 대면</li>
+          </ul>
+          <details class="question-group" open>
+            <summary>면접관에게 물어볼 질문 5개</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>출장</h4><p>국내외 FAT/SAT 셋업 출장은 1년에 몇 번, 한 번에 얼마나 가나요? 독일·일본 법인은 어디까지 맡나요?</p></article>
+              <article class="mini-qa"><h4>SW 조직</h4><p>비전·제어 SW 팀은 몇 명이고, 코드리뷰·Git/Jira·테스트는 어떻게 하나요?</p></article>
+              <article class="mini-qa"><h4>업무 비중</h4><p>입사 후 첫 6개월은 기존 PLANET EV 유지보수와 신규 개발 중 어느 쪽 비중이 큰가요? C++ 엔진·CUDA는 누가 맡고 있나요?</p></article>
+              <article class="mini-qa"><h4>검증 문서</h4><p>공고에 GAMP 5가 있는데, 검증 문서 작업을 개발자가 얼마나 맡나요?</p></article>
+              <article class="mini-qa"><h4>보상·IPO</h4><p>처우협상 단계에서: 식대 포함 여부, 성과급 지급 이력, IPO 일정과 스톡옵션 계획</p><div class="confirm">보상 질문은 실무 면접에서 먼저 꺼내지 않는다.</div></article>
+            </div>
+          </details>
+        </section>
+
+        <section id="enclony-questions">
+          <h2>엔클로니 예상 질문</h2>
+          <p class="lead">공고 문구에서 뽑은 질문입니다. 경험한 것은 구체적으로, 없는 것은 없다고 먼저 말하고 접근 방법을 답합니다.</p>
+          <details class="question-group" open>
+            <summary>① 카메라·영상처리 — 5문항</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>1. 카메라 2대는 어떻게 사용했나요?</h4><p>“dRAST 3.0에서 뷰웍스 카메라 2대로 영상을 얻는 기능을 개발했습니다. Template matching으로 촬영 위치를 맞추고 OpenCV로 분석했습니다.”</p><div class="confirm">[확인] 카메라 모델·SDK, 2대의 용도와 동기화 방식은 지원서에 없음. 기억으로 확정한 것만 말한다.</div></article>
+              <article class="mini-qa"><h4>2. 초점은 어떻게 맞췄나요?</h4><p>“QDST에서는 Projection으로 Focus mark를 찾고 Sobel 값으로 Z축 위치를 판단했습니다. dRAST에서는 Projection으로 초점 위치를 구하고 그 위치를 기준으로 항상 같은 곳으로 이동하게 했습니다.”</p></article>
+              <article class="mini-qa"><h4>3. 영상 노이즈는 어떻게 처리했나요?</h4><p>“OpenCV Thresholding으로 이진화하고 노이즈를 걸러냈습니다. Focus mark 불량을 따로 검출하는 프로그램도 만들어 키트 영상 상태를 확인했습니다.”</p></article>
+              <article class="mini-qa"><h4>4. 고속 카메라 이미지 버퍼 관리 경험은?</h4><p>“초당 수백 장을 받는 고속 라인 환경은 직접 해 보지 않았습니다. 제가 한 것은 슬롯·시간 단위로 촬영하고 저장·분석하는 구조였습니다. 고속 환경이라면 버퍼를 미리 잡아 재사용하고, 획득·처리·저장 스레드를 큐로 나눠 처리가 밀려도 획득이 멈추지 않게 하는 것부터 확인하겠습니다.”</p><div class="confirm">뒤 문장은 실무 경험이 아니라 접근 방법이라고 구분해서 말한다.</div></article>
+              <article class="mini-qa"><h4>5. CUDA·TensorRT 써 봤나요?</h4><p>“직접 써 보지 않았습니다. 영상처리는 OpenCV를 CPU에서 사용했습니다. 먼저 어느 단계가 실제로 느린지 측정하고, OpenCV CUDA 모듈처럼 기존 코드를 크게 바꾸지 않는 방법부터 검토하겠습니다.”</p></article>
+            </div>
+          </details>
+          <details class="question-group">
+            <summary>② 장비 제어·시퀀스 — 4문항</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>6. 모터는 어떻게 제어했나요?</h4><p>“QDST에서 HW팀이 정의한 명령을 TCP/IP로 보내 로봇암과 카메라 이동축을 움직였고, 모터·온도 제어 기능을 개발했습니다. 드라이버나 펌웨어를 직접 만든 것은 아니고, 정해진 명령으로 시퀀스를 구성하는 쪽이었습니다.”</p></article>
+              <article class="mini-qa"><h4>7. 검사 시퀀스를 어떻게 설계했나요?</h4><p>“dRAST에서 균 배양·온도 확인, 피펫 분주, 시간에 따른 촬영·저장 순서를 설계해 장비 제어 로직으로 구현했습니다. 각 단계가 끝났는지 확인한 뒤 다음 단계로 넘어가게 했습니다.”</p></article>
+              <article class="mini-qa"><h4>8. 검사 중 프로그램이 죽으면?</h4><p>“QDST에서 진행 상태를 JSON과 SQLite에 기록하고, 다시 켜면 저장된 상태를 읽어 이어서 검사하도록 했습니다.”</p></article>
+              <article class="mini-qa"><h4>9. 장비가 없을 때는 어떻게 개발했나요?</h4><p>“장비가 부족해서 PC에서 동작을 먼저 확인하는 Emulator를 만들었습니다. 키트 버전별 통합시험과 결과 리포트 프로그램도 만들어 시험을 도왔습니다.”</p></article>
+            </div>
+          </details>
+          <details class="question-group">
+            <summary>③ C++·성능·통신 — 4문항</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>10. C/C++ 실무 경험은?</h4><p>“주력은 C#입니다. C++은 시험 도구와 기존 프로그램 유지보수에서 다뤘습니다. C++ 영상 엔진을 처음부터 만든 경험은 없습니다.”</p><div class="confirm">C++ 영상 코어 개발·구조 분석은 근거가 없어 지원서에서 지웠다. 말로도 주장하지 않는다.</div></article>
+              <article class="mini-qa"><h4>11. C#과 C++ DLL 연동은?</h4><p>“P/Invoke와 C++/CLI 방식의 차이, 큰 이미지 버퍼는 복사하지 않고 포인터로 넘기는 이유 정도를 이해하고 있습니다. 직접 메모리 최적화를 한 경험은 없습니다.”</p><div class="confirm">[확인] 실제로 DLL 연동을 해 본 적이 있으면 그 사례로 바꾼다.</div></article>
+              <article class="mini-qa"><h4>12. 영상처리 중 UI가 멈추지 않게 하려면?</h4><p>“장비 동작과 영상처리는 별도 작업으로 돌리고, 화면 갱신만 UI 스레드에서 합니다. 위 <a href="#ui-thread">버튼·UI 스레드</a>에 정리한 방식 그대로입니다.”</p></article>
+              <article class="mini-qa"><h4>13. MES·RS-485·Modbus 경험은?</h4><p>“직접 해 보지 않았습니다. 장비 통신은 TCP/IP 명령·응답으로 했습니다. 명령과 응답을 짝지어 보고, 응답이 없으면 정한 횟수만큼 재시도하는 원칙은 같다고 봅니다.”</p></article>
+            </div>
+          </details>
+          <details class="question-group">
+            <summary>④ 협업·마무리 — 5문항</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>14. 제조·품질·기계 부서와 협업은?</h4><p>“퀀타매트릭스에서 HW팀이 정의한 명령으로 장비를 제어했고, 장비를 직접 보면서 히팅과 부품 체결 문제를 확인했습니다. 결핵연구원·녹십자 납품 장비에서는 연구원 요청을 받아 기능을 수정했습니다.”</p></article>
+              <article class="mini-qa"><h4>15. 의료기기 경험이 산업 검사장비에 도움이 되나요?</h4><p>“결과를 믿을 수 있게 만드는 습관이 남았습니다. 요구사항부터 시험 결과까지 추적하고, 바꾼 부분의 영향 범위를 확인하는 방식은 검사장비에서도 그대로 쓸 수 있습니다.”</p></article>
+              <article class="mini-qa"><h4>16. GAMP 5·CSV 경험은?</h4><p>“GAMP 5 실무는 해 보지 않았습니다. 대신 의료기기에서 IEC 62304에 맞춰 요구사항부터 시험 결과까지 추적하고, FDA 대응 V&amp;V 자료를 보완했습니다. 요구사항을 시험으로 증명하는 방식은 같아서 빠르게 맞출 수 있다고 봅니다.”</p><div class="confirm">GAMP 5·Part 11 실무를 했다고 바꾸지 않는다.</div></article>
+              <article class="mini-qa"><h4>17. 해외 셋업 출장 가능한가요?</h4><p>“가능합니다. 퀀타매트릭스에서 FDA 대응 준비로 미국 현지 지원을 다녀왔고, 납품 장비의 현장 요청도 직접 대응했습니다.”</p><div class="confirm">[확인] 출장 빈도·기간을 되물어 본다. 공개 자료로는 확인 못 함.</div></article>
+              <article class="mini-qa"><h4>18. 마지막으로 질문 있나요?</h4><p>“입사하면 처음 맡게 될 장비와 카메라·구동부 구성이 궁금합니다. C++ 엔진과 C# UI는 어떻게 나뉘어 있는지, 팀 구성은 어떻게 되는지도 여쭙고 싶습니다.”</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section id="enclony-boundary">
+          <h2>엔클로니 사실관계 경계</h2>
+          <ul>
+            <li>C++ 영상 코어 개발·구조 분석은 주장하지 않음(근거 없음)</li>
+            <li>CUDA·TensorRT, 메모리 핀 고정, MES, 다축 정밀 제어, 고속 멀티카메라 성과를 새로 만들지 않음</li>
+            <li>뷰웍스 카메라 모델·SDK, 2대의 동기화 방식은 확인한 것만 말함</li>
+            <li>FDA 경험은 보안 기능 개발과 시험 추적성으로만 설명하고, GAMP 5·Part 11 실무로 바꾸지 않음</li>
+            <li>공고 기준은 점핏 54882058. 처음 지원한 55128891과 같은 공고인지는 확인하지 못함</li>
+          </ul>
+        </section>
+
       </main>
     </div>
 
