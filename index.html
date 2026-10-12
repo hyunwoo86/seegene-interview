@@ -833,6 +833,7 @@
             <a href="#enclony-answers">자기소개·지원동기·이직</a>
             <a href="#enclony-company">회사 정보와 역질문 7개</a>
             <a href="#enclony-questions">예상 질문 20개</a>
+            <a href="#enclony-interop">C# ↔ C++ DLL 연동</a>
             <a href="#enclony-boundary">사실관계 경계</a>
           </div>
         </details>
@@ -1953,7 +1954,7 @@ private async void StartButton_Click(
             <summary>③ C++·성능·통신 — 4문항</summary>
             <div class="detail-body bank-grid">
               <article class="mini-qa"><h4>10. C/C++ 실무 경험은?</h4><p>“주력은 C#입니다. C++은 시험 도구와 기존 프로그램 유지보수에서 다뤘습니다. C++ 영상 엔진을 처음부터 만든 경험은 없습니다.”</p><div class="confirm">C++ 영상 코어 개발·구조 분석은 근거가 없어 지원서에서 지웠다. 말로도 주장하지 않는다.</div></article>
-              <article class="mini-qa"><h4>11. C#과 C++ DLL 연동은?</h4><p>“P/Invoke와 C++/CLI 방식의 차이, 큰 이미지 버퍼는 복사하지 않고 포인터로 넘기는 이유 정도를 이해하고 있습니다. 직접 메모리 최적화를 한 경험은 없습니다.”</p><div class="confirm">[확인] 실제로 DLL 연동을 해 본 적이 있으면 그 사례로 바꾼다.</div></article>
+              <article class="mini-qa"><h4>11. C#과 C++ DLL 연동은?</h4><p>“해 봤지만 많지는 않습니다. 대신 연동에서 문제가 되는 지점, 즉 데이터 전달 방식, 메모리 해제 책임, 콜백 스레드는 알고 있습니다.” 꼬리 질문은 아래 <a href="#enclony-interop">C# ↔ C++ DLL 연동 기술 대응</a> 10문항으로 답한다.</p></article>
               <article class="mini-qa"><h4>12. 영상처리 중 UI가 멈추지 않게 하려면?</h4><p>“장비 동작과 영상처리는 별도 작업으로 돌리고, 화면 갱신만 UI 스레드에서 합니다. 위 <a href="#ui-thread">버튼·UI 스레드</a>에 정리한 방식 그대로입니다.”</p></article>
               <article class="mini-qa"><h4>13. MES·RS-485·Modbus 경험은?</h4><p>“직접 해 보지 않았습니다. 장비 통신은 TCP/IP 명령·응답으로 했습니다. 명령과 응답을 짝지어 보고, 응답이 없으면 정한 횟수만큼 재시도하는 원칙은 같다고 봅니다.”</p></article>
             </div>
@@ -1968,6 +1969,80 @@ private async void StartButton_Click(
               <article class="mini-qa"><h4>18. 왜 대기업이 아니라 중소기업인가요?</h4><p>“회사 규모보다 제가 가장 잘하는 일을 깊게 할 수 있는지가 기준입니다. 엔클로니는 카메라·구동부·검사 SW를 한 장비 안에서 직접 다루고, 제 경험이 바로 쓰일 수 있는 곳입니다. 퀀타매트릭스도 작은 규모에서 장비를 처음부터 제품화까지 만든 회사라 그 환경이 익숙합니다.”</p><div class="confirm">2025 영상처리 직무 면접 후기에 나온 질문.</div></article>
               <article class="mini-qa"><h4>19. 공고에 없는 다른 일을 맡는다면?</h4><p>“장비 SW는 원래 경계가 넓다고 생각합니다. 퀀타매트릭스에서도 장비 SW와 함께 시험 도구, Emulator, 전시용 데모, 현장 요청 대응까지 했습니다. 제품에 필요한 일이면 맡겠습니다. 다만 제가 가장 크게 기여할 수 있는 건 장비 제어와 영상 쪽이라는 점은 말씀드리고 싶습니다.”</p><div class="confirm">2025 영상처리 직무 면접 후기에 나온 질문.</div></article>
               <article class="mini-qa"><h4>20. 마지막으로 질문 있나요?</h4><p>“입사하면 처음 맡게 될 장비와 카메라·구동부 구성이 궁금합니다. C++ 엔진과 C# UI는 어떻게 나뉘어 있는지, 팀 구성은 어떻게 되는지도 여쭙고 싶습니다.”</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section id="enclony-interop">
+          <h2>C# ↔ C++ DLL 연동 기술 대응</h2>
+          <p class="lead">공고의 핵심 우대사항입니다. 경험은 많지 않다고 먼저 말하고, 원리와 주의점을 정확히 설명해 신뢰를 얻습니다.</p>
+          <div class="answer">“C++ DLL 연동은 해 봤지만 많이 하지는 않았습니다. 그래도 연동할 때 문제가 되는 지점은 알고 있습니다. 데이터를 어떻게 넘기는지, 메모리를 누가 해제하는지, 콜백이 어느 스레드에서 오는지입니다.”</div>
+          <div class="callout danger"><strong>[확인]</strong> 실제로 연동했던 DLL(카메라 SDK, 모션 보드, 사내 C++ 모듈 등)을 하나 떠올려 두고, 그 사례로 첫 문장을 바꾼다. 아래 꼬리 답은 실무 성과가 아니라 알고 있는 원리로 말한다.</div>
+
+          <div class="thread-grid">
+            <article class="priority must">
+              <span class="pill">P/Invoke</span>
+              <h3>C 함수 직접 호출</h3>
+              <ul>
+                <li>C++에서 <code>extern "C"</code>로 내보낸 함수를 <code>DllImport</code>(.NET 7+는 <code>LibraryImport</code>)로 호출</li>
+                <li>함수 단위라 간단하고 빠름</li>
+                <li>C++ 클래스는 직접 못 씀 → C 함수로 감싸야 함</li>
+              </ul>
+            </article>
+            <article class="priority plus">
+              <span class="pill">C++/CLI</span>
+              <h3>중간 래퍼 DLL</h3>
+              <ul>
+                <li>관리 코드와 네이티브 코드를 한 DLL에서 함께 씀</li>
+                <li>C++ 클래스·STL을 그대로 감싸 C#에 클래스로 노출</li>
+                <li>Windows·.NET 전용, 빌드·디버깅이 복잡</li>
+              </ul>
+            </article>
+            <article class="priority gap">
+              <span class="pill">공통 위험</span>
+              <h3>자주 터지는 곳</h3>
+              <ul>
+                <li>호출 규약(cdecl/stdcall)·구조체 정렬 불일치</li>
+                <li>메모리 해제 책임 혼동 → 누수·이중 해제</li>
+                <li>GC가 콜백 delegate를 수거 → 크래시</li>
+                <li>x86/x64 비트 불일치</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="code-block"><pre>// C++ (엔진 DLL)
+extern "C" __declspec(dllexport)
+int ProcessImage(const uint8_t* buf, int width, int height, int stride, Result* out);
+
+// C# : 영상 버퍼를 복사 없이 포인터로 넘김
+[DllImport("Engine.dll", CallingConvention = CallingConvention.Cdecl)]
+static extern int ProcessImage(IntPtr buf, int width, int height, int stride, out Result result);
+
+[StructLayout(LayoutKind.Sequential)]
+struct Result { public int DefectCount; public float Score; }
+
+unsafe
+{
+    fixed (byte* p = frame)          // 호출하는 동안만 GC가 못 옮기게 고정
+    {
+        int rc = ProcessImage((IntPtr)p, w, h, stride, out var r);
+        if (rc != 0) throw new EngineException(rc);   // C++ 예외 대신 오류 코드
+    }
+}</pre></div>
+
+          <details class="question-group" open>
+            <summary>예상 기술 질문과 꼬리 답 — 10문항</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>1. P/Invoke와 C++/CLI 중 무엇을 쓰나요?</h4><p>“함수 몇 개를 부르는 정도면 P/Invoke가 단순합니다. C++ 엔진이 클래스 중심이고 주고받는 객체가 많으면 C++/CLI 래퍼가 편합니다. 다만 C++/CLI는 Windows 전용이고 빌드가 복잡해서, 경계를 얇은 C 함수로 정리할 수 있으면 P/Invoke를 먼저 고려합니다.”</p></article>
+              <article class="mini-qa"><h4>2. 큰 영상 버퍼를 어떻게 넘기나요?</h4><p>“복사하지 않고 포인터만 넘깁니다. C#에서 만든 배열이면 호출하는 동안만 <code>fixed</code>나 <code>GCHandle.Alloc(Pinned)</code>로 고정해 GC가 옮기지 못하게 합니다. 카메라 SDK가 준 네이티브 버퍼면 <code>IntPtr</code> 그대로 엔진에 넘깁니다.”</p><div class="defense"><strong>꼬리</strong>“계속 고정해 두면?” → GC 힙이 조각나 성능이 떨어집니다. 오래 쓰는 버퍼는 처음에 네이티브 메모리(<code>NativeMemory.Alloc</code>)나 POH(<code>GC.AllocateArray(pinned: true)</code>)로 잡아 재사용합니다.</div></article>
+              <article class="mini-qa"><h4>3. 마샬링 비용은 어떻게 줄이나요?</h4><p>“int·float·고정 크기 구조체 같은 blittable 타입만 쓰면 변환 없이 그대로 넘어갑니다. string·bool·배열이 섞인 구조체는 변환 비용이 생기니, 반복 호출 경로에서는 피하고 포인터와 길이로 넘깁니다. 호출 횟수 자체도 줄여 한 프레임에 한 번 부르게 묶습니다.”</p></article>
+              <article class="mini-qa"><h4>4. 메모리는 누가 해제하나요?</h4><p>“할당한 쪽이 해제하는 게 원칙입니다. C++이 할당했으면 C++의 <code>FreeResult()</code> 같은 함수를 C#에서 불러 해제합니다. C#에서는 <code>SafeHandle</code>로 감싸 예외가 나도 해제되게 합니다. C++ <code>new</code>로 만든 걸 C#의 <code>Marshal.FreeHGlobal</code>로 지우면 안 됩니다.”</p></article>
+              <article class="mini-qa"><h4>5. C++에서 C#으로 콜백은?</h4><p>“delegate를 함수 포인터로 넘깁니다. 주의할 점이 두 가지입니다. delegate를 필드에 잡아 두지 않으면 GC가 수거해서 나중에 크래시가 납니다. 그리고 콜백은 C++ 스레드에서 오기 때문에 화면 갱신은 <code>Dispatcher</code>로 넘겨야 합니다.”</p><div class="defense"><strong>꼬리</strong>“콜백에서 오래 걸리는 일을 하면?” → 카메라 획득 스레드가 막혀 프레임이 빠집니다. 콜백에서는 버퍼만 큐에 넣고 바로 돌려줍니다.</div></article>
+              <article class="mini-qa"><h4>6. C++ 예외가 C#으로 넘어오면?</h4><p>“경계를 넘는 예외는 동작이 보장되지 않아서, C++ 쪽 export 함수에서 try-catch로 모두 잡고 오류 코드로 돌려줍니다. C#에서는 그 코드를 보고 예외로 바꿉니다.”</p></article>
+              <article class="mini-qa"><h4>7. 고속 카메라에서 프레임 드롭은?</h4><p>“획득·처리·저장을 다른 스레드로 나누고 사이에 큐를 둡니다. 버퍼는 미리 여러 개 잡아 돌려 쓰고(버퍼 풀), 처리가 밀리면 큐 길이로 바로 알 수 있게 합니다. 드롭이 나면 프레임 번호로 기록해서 어디서 밀렸는지 확인합니다.”</p><div class="confirm">고속 카메라 실무 경험은 없다고 먼저 구분한다.</div></article>
+              <article class="mini-qa"><h4>8. 처리된 영상을 WPF에 빠르게 표시하려면?</h4><p>“<code>WriteableBitmap</code>을 한 번 만들고 <code>Lock</code> → 백버퍼에 복사 → <code>AddDirtyRect</code> → <code>Unlock</code> 순서로 갱신합니다. 매 프레임 새 비트맵을 만들지 않고, 표시 주기는 획득 주기보다 낮춰도 됩니다.”</p></article>
+              <article class="mini-qa"><h4>9. 24시간 돌리면서 메모리 누수는 어떻게 찾나요?</h4><p>“작업 관리자나 PerfMon으로 Private Bytes와 핸들 수를 장시간 기록합니다. 관리 힙은 그대로인데 프로세스 메모리만 늘면 네이티브 쪽 누수라서, 해제 짝이 맞는지와 SafeHandle 누락을 먼저 봅니다.”</p></article>
+              <article class="mini-qa"><h4>10. 연동하다 크래시가 나면 어떻게 디버깅하나요?</h4><p>“Visual Studio에서 Mixed 모드 디버깅을 켜면 C#과 C++ 스택을 같이 볼 수 있습니다. 현장에서는 덤프를 남겨 분석합니다. 흔한 원인은 호출 규약·구조체 정렬 불일치, x86/x64 불일치, 이미 해제된 메모리 접근, 수거된 콜백입니다.”</p></article>
             </div>
           </details>
         </section>
