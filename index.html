@@ -758,6 +758,17 @@
       details { break-inside: avoid; }
       details > .detail-body { display: block !important; }
     }
+    .whiteboard-figure { margin: 20px 0; }
+    .whiteboard-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+    .whiteboard-figure figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
+    .whiteboard-data { width: 100%; table-layout: fixed; }
+    .whiteboard-data td, .whiteboard-data th { overflow-wrap: anywhere; }
+    @media (max-width: 600px) {
+      .whiteboard-data thead { display: none; }
+      .whiteboard-data tr { display: block; padding: 12px 0; border-bottom: 1px solid var(--line); }
+      .whiteboard-data td { display: block; width: auto; padding: 4px 0; }
+      .whiteboard-data td[data-label]::before { content: attr(data-label) " · "; font-weight: 700; }
+    }
   </style>
 </head>
 <body>
@@ -797,6 +808,7 @@
             <a href="#topics">기술 준비 8개 영역</a>
             <a href="#pcr-basic">PCR 쉬운 설명</a>
             <a href="#pcr">dRAST와 PCR 비교</a>
+            <a href="#drast-whiteboard">dRAST 화이트보드·DB 구성</a>
             <a href="#system-sequence">전체 로직·시퀀스</a>
             <a href="#ui-thread">버튼·UI 스레드</a>
             <a href="#design">시스템 설계 문제</a>
@@ -1094,6 +1106,47 @@
               <tr><td>검증</td><td>Emulator·통합시험·현장지원</td><td>의료기기 산출물, 오류·복구·실장비 검증</td></tr>
             </tbody>
           </table>
+        </section>
+
+        <section id="drast-whiteboard">
+          <h2>dRAST 3.0 화이트보드 설명과 데이터 구성</h2>
+          <p>먼저 “항생제 감수성 검사 과정을 자동화하는 장비”라고 설명하고, 가운데 앱을 그린 뒤 저장소·장비·영상 분석·시험 도구를 연결한다. 아래 그림은 면접 설명용 개념도이며 실제 클래스 호출 관계, 배선도, DB 스키마를 그대로 옮긴 그림은 아니다.</p>
+          <figure class="whiteboard-figure">
+            <a href="assets/drast3-whiteboard.png" target="_blank" rel="noopener" aria-label="dRAST 전체 구성도 PNG 원본 크게 보기">
+              <img src="assets/drast3-whiteboard.png" width="1586" height="992" loading="lazy" alt="dRAST 3.0 Windows 앱과 검사 작업 순서 관리, SQLite·JSON·영상 폴더·로그 저장, 외주 하드웨어 미들웨어, 카메라 2대, 분석팀 AI 프로그램, 본인 개발 Emulator를 연결한 전체 구성도">
+            </a>
+            <figcaption>그림을 누르면 PNG 원본을 크게 볼 수 있다. 파란 실선은 본인 개발 영역, 회색 점선은 외부 담당 영역. 앱 내부 화살표는 개념적 연결이며 정확한 호출 순서를 뜻하지 않는다.</figcaption>
+          </figure>
+
+          <h3>1. 화이트보드에 그리는 순서</h3>
+          <ol>
+            <li><strong>가운데 앱</strong>: 화면(View·ViewModel), 검사 로직, 작업 순서 관리, 장비 연동, 영상 수신·자동 초점을 나눈다. 여러 검사가 로봇·분주기·카메라를 공유하므로 다음 작업에 필요한 장비의 사용 가능 여부와 순서를 관리한다고 설명한다.</li>
+            <li><strong>아래 저장소</strong>: SQLite, JSON, 영상 폴더, 로그 파일을 따로 그린다. 화면과 저장소를 직접 연결하는 설명보다 앱의 데이터 접근 계층을 통해 조회·저장하는 흐름으로 설명한다.</li>
+            <li><strong>오른쪽 장비</strong>: 앱 ↔ TCP 명령·응답 ↔ 외주 하드웨어 미들웨어 ↔ 실제 장비 순서로 연결한다. 앱 연동과 하드웨어 구동부의 담당 경계를 구분한다.</li>
+            <li><strong>카메라와 분석</strong>: 카메라 2대의 영상 수신·버퍼·초점 계산은 앱 쪽에, ImageProc.exe는 별도 분석팀 영역에 그린다. 프로그램 실행과 결과·종료 코드 확인을 화살표로 구분한다.</li>
+            <li><strong>Emulator</strong>: 개발 시 실장비 연동을 대체하는 시험 경로로 점선 연결한다. 명령·응답과 검사 순서는 먼저 확인하되, 실제 충돌·센서 반응·동작 시간은 실장비에서 확인한다고 설명한다.</li>
+          </ol>
+
+          <h3>2. DB와 파일에 무엇을 저장하는가</h3>
+          <table class="whiteboard-data">
+            <thead><tr><th scope="col">저장 위치</th><th scope="col">설명할 내용</th><th scope="col">꼬리 질문의 확인 지점</th></tr></thead>
+            <tbody>
+              <tr><td><strong>SQLite</strong></td><td data-label="역할">검사 기록과 설정을 조회·저장하는 DB</td><td data-label="확인할 점">실제 테이블·키, 상태 갱신 시점, 트랜잭션 범위는 확인한 구현만 설명</td></tr>
+              <tr><td><strong>JSON</strong></td><td data-label="역할">동작 파라미터를 읽어 객체로 관리하는 설정 파일</td><td data-label="확인할 점">DB와 중복되는 값이 있는지, 로드·갱신 시점과 우선순위 확인</td></tr>
+              <tr><td><strong>영상 폴더</strong></td><td data-label="역할">촬영한 이미지 파일 저장</td><td data-label="확인할 점">검사와 영상의 연결 규칙, 저장 실패와 용량 부족 시 처리 확인</td></tr>
+              <tr><td><strong>로그 파일</strong></td><td data-label="역할">장비 명령·상태·오류를 남겨 현상 추적</td><td data-label="확인할 점">명령 전송·응답·작업 완료를 구분해 설명. 로그와 DB의 역할을 혼동하지 않음</td></tr>
+            </tbody>
+          </table>
+          <div class="evidence"><strong>실제 구현과 설계 원칙 구분</strong>위 저장 분류는 포트폴리오의 설명 수준이다. 정확한 DB 테이블명, 영상 연결 키, JSON과 SQLite의 권위 관계, 중단 후 자동 재개 가능 단계는 별도로 확인한다. QDST의 상태 저장·복구 경험을 dRAST의 모든 단계에 그대로 적용했다고 말하지 않는다.</div>
+
+          <h3>3. 그림을 가리키며 하는 2분 설명</h3>
+          <div class="answer">
+            <p>“dRAST 3.0은 항생제 감수성 검사 과정을 자동화하는 장비입니다. 제가 맡은 부분은 Windows 앱의 화면과 검사 로직, 장비 연동, 영상 수신·초점 제어, 시험 도구입니다.”</p>
+            <p>“검사 정보를 등록하고 시료와 패널을 넣으면 분주 후 배양하면서 시간에 따라 촬영합니다. 여러 검사가 같은 로봇·분주기·카메라를 사용하기 때문에 앱에서 작업 순서와 장비 사용 가능 여부를 관리합니다.”</p>
+            <p>“장비를 구동하는 하드웨어 미들웨어는 외주 개발 영역이고, 저는 TCP 명령·응답을 앱의 검사 흐름에 연결했습니다. AI 영상 분석은 분석팀 프로그램을 실행하고 결과와 종료 코드를 확인해 화면에 반영했습니다.”</p>
+            <p>“검사 기록과 설정은 SQLite, 동작 파라미터는 JSON, 촬영 이미지는 영상 폴더, 명령과 오류는 로그 파일로 구분해 설명할 수 있습니다. 장비가 부족할 때는 제가 만든 Emulator로 명령·응답과 검사 순서를 먼저 확인하고, 실제 동작은 실장비에서 확인했습니다.”</p>
+          </div>
+          <p><strong>다음 질문이 나오면</strong>DB는 저장 시점·일관성, 통신은 응답과 실제 완료의 차이, 스케줄러는 공유 장비 충돌, 카메라는 프레임 수신과 초점 계산을 확대해서 그린다. 처음부터 모든 클래스와 예외를 한꺼번에 쓰지 않는다.</p>
         </section>
 
         <section id="system-sequence">
