@@ -834,6 +834,7 @@
             <a href="#enclony-company">회사 정보와 역질문 7개</a>
             <a href="#enclony-questions">예상 질문 20개</a>
             <a href="#enclony-interop">C# ↔ C++ DLL 연동</a>
+            <a href="#enclony-mvvm">MVVM·Prism</a>
             <a href="#enclony-boundary">사실관계 경계</a>
           </div>
         </details>
@@ -1846,7 +1847,7 @@ private async void StartButton_Click(
               <ul>
                 <li>C# WPF/MVVM 장비 제어 화면</li>
                 <li>로봇암·카메라 이동축·모터·온도 제어(QDST)</li>
-                <li>Ximea·뷰웍스 카메라 영상 획득</li>
+                <li>Ximea·뷰웍스 카메라 영상 획득(dRAST는 Matrox MIL)</li>
                 <li>OpenCV 영상처리(Projection·Sobel·Thresholding·Template matching)</li>
                 <li>TCP/IP 장비 통신, 중단 후 복구</li>
               </ul>
@@ -1934,7 +1935,7 @@ private async void StartButton_Click(
           <details class="question-group" open>
             <summary>① 카메라·영상처리 — 5문항</summary>
             <div class="detail-body bank-grid">
-              <article class="mini-qa"><h4>1. 카메라 2대는 어떻게 사용했나요?</h4><p>“dRAST 3.0에서 뷰웍스 카메라 2대로 영상을 얻는 기능을 개발했습니다. Template matching으로 촬영 위치를 맞추고 OpenCV로 분석했습니다.”</p><div class="confirm">[확인] 카메라 모델·SDK, 2대의 용도와 동기화 방식은 지원서에 없음. 기억으로 확정한 것만 말한다.</div></article>
+              <article class="mini-qa"><h4>1. 카메라 2대는 어떻게 사용했나요?</h4><p>“dRAST 3.0에서 촬영 영역 두 곳의 처리 속도를 높이려고 카메라를 1대에서 2대로 전환했습니다. 카메라는 뷰웍스였고 Matrox MIL로 영상을 받았습니다. 받은 영상은 OpenCV로 분석하고, AI 판정은 분석 담당 팀의 ImageProc.exe를 실행해 결과를 받았습니다.”</p><div class="defense"><strong>꼬리</strong>“MIL을 직접 다뤘나요?” → [확인] 카메라 설정 파일(DCF)·장치 번호·버퍼 구성 중 본인이 직접 한 범위만 말한다.</div><div class="confirm">[확인] 지원서에는 “Template matching을 이용한 영상 획득”이라고 적었지만, 포트폴리오 검토 기록에는 “Template matching 알고리즘은 분석 엔진 쪽 코드, 본인은 호출·종료 코드 처리”로 되어 있음. 면접 전 어느 쪽이 맞는지 정리하고, 질문받으면 실제 범위로 답한다.</div></article>
               <article class="mini-qa"><h4>2. 초점은 어떻게 맞췄나요?</h4><p>“QDST에서는 Projection으로 Focus mark를 찾고 Sobel 값으로 Z축 위치를 판단했습니다. dRAST에서는 Projection으로 초점 위치를 구하고 그 위치를 기준으로 항상 같은 곳으로 이동하게 했습니다.”</p></article>
               <article class="mini-qa"><h4>3. 영상 노이즈는 어떻게 처리했나요?</h4><p>“OpenCV Thresholding으로 이진화하고 노이즈를 걸러냈습니다. Focus mark 불량을 따로 검출하는 프로그램도 만들어 키트 영상 상태를 확인했습니다.”</p></article>
               <article class="mini-qa"><h4>4. 고속 카메라 이미지 버퍼 관리 경험은?</h4><p>“초당 수백 장을 받는 고속 라인 환경은 직접 해 보지 않았습니다. 제가 한 것은 슬롯·시간 단위로 촬영하고 저장·분석하는 구조였습니다. 고속 환경이라면 버퍼를 미리 잡아 재사용하고, 획득·처리·저장 스레드를 큐로 나눠 처리가 밀려도 획득이 멈추지 않게 하는 것부터 확인하겠습니다.”</p><div class="confirm">뒤 문장은 실무 경험이 아니라 접근 방법이라고 구분해서 말한다.</div></article>
@@ -2047,12 +2048,60 @@ unsafe
           </details>
         </section>
 
+        <section id="enclony-mvvm">
+          <h2>MVVM·Prism 질문 대응</h2>
+          <p class="lead">dRAST 3.0 포트폴리오 2쪽에 Prism 구조를 적었으므로, 일반론이 아니라 <strong>포트폴리오 내용을 말로 풀어</strong> 답합니다.</p>
+          <div class="answer">“dRAST 3.0은 .NET 7과 WPF·Prism으로 만들었습니다. View는 입력과 표시만 하고, ViewModel이 화면 데이터와 서비스 호출을 맡습니다. 검사 상태는 Prism EventAggregator로 발행·구독해서 서비스가 화면을 직접 참조하지 않게 했습니다. 서비스는 Prism 컨테이너에 인터페이스로 등록해 생성자로 주입받고, 앱 시작 때 실장비와 Emulator 중 하나를 골라 연결합니다. 그래서 장비 없이도 같은 화면과 로직으로 검사 순서를 확인할 수 있었습니다.”</div>
+          <div class="callout danger"><strong>[확인]</strong> 2023년 Prism 리팩터링은 팀 작업이었음(기록상 로그인 SRS 백로그 담당). 본인이 직접 짠 부분과 팀 구조를 따른 부분을 한 문장으로 정리해 둔다. Region을 직접 구성했는지도 확인.</div>
+
+          <div class="code-block"><pre>// 처리 순서: 화면 입력 → ViewModel → 서비스 호출 → 상태 이벤트 → 화면 갱신
+
+// 1) 앱 시작: 실장비 / Emulator 중 하나를 같은 인터페이스로 등록
+protected override void RegisterTypes(IContainerRegistry reg)
+{
+    if (settings.UseEmulator) reg.RegisterSingleton&lt;IDeviceService, EmulatorDeviceService&gt;();
+    else                      reg.RegisterSingleton&lt;IDeviceService, RealDeviceService&gt;();
+}
+
+// 2) 서비스: 화면을 모름. 상태가 바뀌면 이벤트만 발행
+public class TestEventStatusChanged : PubSubEvent&lt;TestStatus&gt; { }
+_events.GetEvent&lt;TestEventStatusChanged&gt;().Publish(status);
+
+// 3) ViewModel: 생성자로 주입받고, 이벤트를 UI 스레드에서 구독
+public class TestListViewModel : BindableBase
+{
+    private string _status = "대기";
+    public string Status { get =&gt; _status; set =&gt; SetProperty(ref _status, value); }
+
+    public TestListViewModel(IDeviceService device, IEventAggregator events)
+    {
+        events.GetEvent&lt;TestEventStatusChanged&gt;()
+              .Subscribe(s =&gt; Status = s.ToString(), ThreadOption.UIThread);
+    }
+}</pre></div>
+          <div class="confirm">위 코드는 구조 설명용 예시이며 실제 dRAST 소스가 아님. 클래스 이름을 실제 코드처럼 말하지 않는다.</div>
+
+          <details class="question-group" open>
+            <summary>꼬리 질문 — 7문항</summary>
+            <div class="detail-body bank-grid">
+              <article class="mini-qa"><h4>1. 왜 EventAggregator를 썼나요?</h4><p>“서비스가 ViewModel을 직접 부르면 서비스가 화면에 묶입니다. 상태 변경을 이벤트로 발행하면 화면이 몇 개든 필요한 곳만 구독하면 되고, 서비스는 화면이 있는지 몰라도 됩니다. 장비 스레드에서 발행돼도 <code>ThreadOption.UIThread</code>로 구독하면 화면 갱신이 UI 스레드에서 됩니다.”</p></article>
+              <article class="mini-qa"><h4>2. EventAggregator의 단점은?</h4><p>“이벤트가 많아지면 누가 발행하고 누가 받는지 추적하기 어렵습니다. 그래서 상태 전달처럼 여러 화면이 알아야 하는 것에만 쓰고, 한 화면 안의 동작은 Command와 바인딩으로 처리하는 게 낫다고 봅니다.”</p></article>
+              <article class="mini-qa"><h4>3. DI를 쓴 이유는?</h4><p>“가장 큰 이유는 Emulator입니다. 실장비와 Emulator가 같은 인터페이스를 구현하니, 등록만 바꾸면 나머지 코드는 그대로 장비 없이 돌아갑니다. 장비가 부족할 때 검사 순서를 PC에서 먼저 확인할 수 있었습니다.”</p></article>
+              <article class="mini-qa"><h4>4. Prism의 Region은?</h4><p>“메인 창의 영역에 이름을 붙여 두고, 그 자리에 들어갈 View를 이름으로 바꿔 끼우는 기능입니다. 메뉴로 검사·설정·로그 화면을 전환할 때 쓰고, ViewModel이 View 클래스를 직접 몰라도 화면을 바꿀 수 있습니다.”</p><div class="confirm">[확인] dRAST에서 Region을 직접 구성했는지. 아니면 “구조는 알고 있다” 수준으로 말한다.</div></article>
+              <article class="mini-qa"><h4>5. 리팩터링 전과 무엇이 달라졌나요?</h4><p>“2022년 버전 화면은 코드 비하인드 방식이었습니다. 2023년에 팀 단위로 .NET 7·Prism 구조로 옮기면서 View, ViewModel, 서비스를 나눴고, 요구사항 번호에 맞춰 테스트를 작성했습니다.”</p><div class="confirm">[확인] 리팩터링 동기(유지보수성, 테스트, FDA 문서화 등)를 기억으로 한 문장 정리.</div></article>
+              <article class="mini-qa"><h4>6. CommunityToolkit.Mvvm과 차이는?</h4><p>“툴킷은 <code>[ObservableProperty]</code>, <code>[RelayCommand]</code> 같은 소스 생성기로 속성 알림과 Command를 줄여 주는 가벼운 라이브러리입니다. Prism은 여기에 Region 화면 전환, 모듈, 대화상자 서비스, DI 컨테이너까지 있는 프레임워크입니다. Prism으로 구조를 잡고 ViewModel은 툴킷으로 줄이는 조합도 가능합니다.”</p></article>
+              <article class="mini-qa"><h4>7. 새 프로젝트라면 무엇을 쓰겠어요?</h4><p>“기존 코드를 먼저 따르겠습니다. 새로 시작한다면 화면 수와 팀 규모로 정합니다. 설정 화면이 많은 검사장비면 Prism의 Region이 편합니다. 다만 Prism 9부터는 일정 규모 이상 회사에 상용 라이선스가 필요해서, 비용이 부담이면 툴킷에 간단한 화면 전환 서비스를 직접 만드는 쪽을 택하겠습니다.”</p><div class="confirm">Prism 8.x까지는 MIT 무료. 9부터 Community(소규모 무료)·Commercial 라이선스. 비용 이야기로 길게 가지 않는다.</div></article>
+            </div>
+          </details>
+        </section>
+
         <section id="enclony-boundary">
           <h2>엔클로니 사실관계 경계</h2>
           <ul>
             <li>C++ 영상 코어 개발·구조 분석은 주장하지 않음(근거 없음)</li>
             <li>CUDA·TensorRT, 메모리 핀 고정, MES, 다축 정밀 제어, 고속 멀티카메라 성과를 새로 만들지 않음</li>
-            <li>뷰웍스 카메라 모델·SDK, 2대의 동기화 방식은 확인한 것만 말함</li>
+            <li>뷰웍스 카메라 모델, MIL 직접 사용 범위, 2대의 동기화 방식은 확인한 것만 말함</li>
+            <li>Prism 리팩터링은 팀 작업. 본인 담당 범위를 구분해서 말함</li>
             <li>FDA 경험은 보안 기능 개발과 시험 추적성으로만 설명하고, GAMP 5·Part 11 실무로 바꾸지 않음</li>
             <li>공고 기준은 점핏 54882058. 처음 지원한 55128891과 같은 공고인지는 확인하지 못함</li>
           </ul>
