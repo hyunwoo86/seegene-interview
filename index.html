@@ -847,6 +847,7 @@
             <a href="#enclony-company">회사 정보와 역질문 7개</a>
             <a href="#enclony-questions">예상 질문 20개</a>
             <a href="#enclony-interop">C# ↔ C++ DLL 연동</a>
+            <a href="#wpf-binding-navigation">WPF 화면 이동·바인딩·특성</a>
             <a href="#enclony-mvvm">MVVM·Prism</a>
             <a href="#enclony-boundary">사실관계 경계</a>
           </div>
@@ -2112,6 +2113,109 @@ unsafe
             </div>
           </details>
         </section>
+
+<section id="wpf-binding-navigation">
+<h2>WPF 화면 이동·바인딩·Attribute</h2>
+<p class="lead">화면이 선택되는 과정부터 입력값 검증과 저장 버튼까지, 코드와 개념을 연결합니다.</p>
+<h3>1. View는 검사 흐름의 어디에 있나?</h3>
+<p>View는 입력과 표시, ViewModel은 화면 상태와 서비스 호출, 검사 서비스는 검사 순서와 공유 자원을 맡습니다. 화면을 바꿔도 계속되어야 하는 검사는 View 수명과 분리합니다. 아래는 역할 설명용 구조이며 실제 dRAST 클래스 구성으로 확인한 것은 아닙니다.</p>
+<div class="code-block"><pre><code>View의 시작 버튼 → ViewModel → 검사 서비스
+검사 서비스: 분주 → 배양 → 촬영 → 분석
+검사 상태·결과 → ViewModel 속성 → Binding → View
+검사 서비스 → Repository → DB</code></pre></div>
+<h3>2. NavigateTo → Current → View 연결</h3>
+<div class="code-block"><pre><code>&quot;Test&quot; =&gt; Nav.NavigateTo&lt;TestViewModel&gt;(),</code></pre></div>
+<p>TestViewModel 타입으로 이동을 요청합니다. DI가 인스턴스를 제공하며 등록 수명에 따라 재사용 여부가 달라집니다. 아래는 대화에서 제공된 코드입니다. 실제 프로젝트 출처는 확인하지 않았습니다.</p>
+<div class="code-block"><pre><code>public bool NavigateTo&lt;T&gt;(object? parameter = null) where T : class
+{
+    if (!CanLeave()) return false;
+
+    log.Add($&quot;   provider.GetRequiredService&lt;{typeof(T).Name}&gt;()&quot;);
+    var next = provider.GetRequiredService&lt;T&gt;();   // 수명(Singleton/Transient)에 따라 재사용 or 새로 생성
+
+    if (ReferenceEquals(next, Current))
+    {
+        (next as IPage)?.OnNavigatedTo(parameter);
+        return true;
+    }
+
+    (Current as IPage)?.OnNavigatedFrom();
+    if (Current != null) _history.Push(Current);
+    Show(next, parameter);
+    return true;
+}</code></pre></div>
+<p>먼저 CanLeave()를 확인합니다. false이면 이동하지 않습니다. next와 Current가 같은 참조라면 진입 콜백만 호출하고 끝납니다. 다른 인스턴스라면 기존 화면의 이탈 콜백, 이력 저장, Show 순서로 진행합니다. IPage를 구현하지 않은 객체는 as IPage와 ?.에 의해 콜백을 건너뜁니다.</p>
+<p>중요: 제공된 본문에는 Current = next가 없습니다. Show 내부에서 Current 교체와 OnNavigatedTo 호출을 하는지 확인해야 합니다. 다음 코드는 연결 방식을 설명하는 예시입니다.</p>
+<div class="code-block"><pre><code>// Show의 예상 역할 — 실제 구현 확인 필요
+Current = next; // 속성 변경 알림 필요
+(next as IPage)?.OnNavigatedTo(parameter);</code></pre></div>
+<div class="code-block"><pre><code>&lt;ContentControl Content=&quot;{Binding Nav.Current}&quot; /&gt;
+
+&lt;!-- 실제로는 Window.Resources 등 리소스 영역에 선언 --&gt;
+&lt;DataTemplate DataType=&quot;{x:Type vm:TestViewModel}&quot;&gt;
+    &lt;views:TestView /&gt;
+&lt;/DataTemplate&gt;</code></pre></div>
+<p>이 방식에서는 Current의 ViewModel에 맞는 DataTemplate이 TestView를 만들고 해당 ViewModel을 데이터 컨텍스트로 사용합니다. Nav가 View를 직접 매핑하는 방식도 있으므로 Show·Current·호스트 XAML을 함께 확인합니다.</p>
+<h3>3. OnNavigatedTo / OnNavigatedFrom과 =&gt; 문법</h3>
+<div class="code-block"><pre><code>public void OnNavigatedTo(object? parameter)
+    =&gt; _log.Add(&quot;   RecipeViewModel.OnNavigatedTo&quot;);
+
+public void OnNavigatedFrom()
+    =&gt; _log.Add(&quot;   RecipeViewModel.OnNavigatedFrom&quot;);</code></pre></div>
+<table class="whiteboard-data"><thead><tr><th scope="col">메서드</th><th scope="col">시점과 용도</th></tr></thead><tbody>
+<tr><td data-label="메서드">OnNavigatedTo(parameter)</td><td data-label="시점과 용도">화면 진입 알림. 매개변수 적용·조회·구독 등에 사용 가능</td></tr>
+<tr><td data-label="메서드">OnNavigatedFrom()</td><td data-label="시점과 용도">화면 이탈 알림. 화면용 타이머 중지·구독 해제 등에 사용 가능</td></tr>
+</tbody></table>
+<p>제공된 Recipe 코드는 로그만 추가합니다. object?는 null도 받을 수 있다는 뜻이며 현재 parameter는 사용하지 않습니다. =&gt;는 식 본문 메서드 문법입니다. 이 코드는 화면을 이동시키지 않고 Nav가 호출한 시점을 기록합니다. WPF가 이름을 보고 자동 호출하는 메서드가 아닙니다.</p>
+<div class="code-block"><pre><code>public void OnNavigatedFrom()
+{
+    _log.Add(&quot;   RecipeViewModel.OnNavigatedFrom&quot;);
+}</code></pre></div>
+<p>생성자와 달리 진입 콜백은 같은 인스턴스에도 반복 호출될 수 있습니다. 제공된 NavigateTo는 같은 화면 재요청 시 From 없이 To만 호출하므로 중복 이벤트 구독을 피해야 합니다. 이탈이 Dispose나 진행 중인 검사 중단을 뜻하지는 않습니다.</p>
+<h3>4. Binding Mode는 방향, UpdateSourceTrigger는 시점</h3>
+<div class="code-block"><pre><code>&lt;TextBox Text=&quot;{Binding Name,
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}&quot; /&gt;</code></pre></div>
+<table class="whiteboard-data"><thead><tr><th scope="col">Mode</th><th scope="col">방향·의미</th></tr></thead><tbody>
+<tr><td data-label="Mode">OneWay</td><td data-label="방향·의미">소스(ViewModel) → 대상(View)</td></tr>
+<tr><td data-label="Mode">TwoWay</td><td data-label="방향·의미">소스 ↔ 대상</td></tr>
+<tr><td data-label="Mode">OneWayToSource</td><td data-label="방향·의미">대상 → 소스</td></tr>
+<tr><td data-label="Mode">OneTime</td><td data-label="방향·의미">초기 반영. DataContext 변경 시 다시 반영될 수 있음</td></tr>
+<tr><td data-label="Mode">Default</td><td data-label="방향·의미">대상 속성의 기본값. TextBox.Text는 TwoWay</td></tr>
+</tbody></table>
+<table class="whiteboard-data"><thead><tr><th scope="col">UpdateSourceTrigger</th><th scope="col">화면 → 소스 반영 시점</th></tr></thead><tbody>
+<tr><td data-label="UpdateSourceTrigger">PropertyChanged</td><td data-label="화면 → 소스 반영 시점">대상 속성 변경 시. TextBox는 입력할 때마다</td></tr>
+<tr><td data-label="UpdateSourceTrigger">LostFocus</td><td data-label="화면 → 소스 반영 시점">컨트롤의 포커스가 빠질 때</td></tr>
+<tr><td data-label="UpdateSourceTrigger">Explicit</td><td data-label="화면 → 소스 반영 시점">BindingExpression.UpdateSource()를 호출할 때</td></tr>
+<tr><td data-label="UpdateSourceTrigger">Default</td><td data-label="화면 → 소스 반영 시점">대상 속성의 기본값. TextBox.Text는 LostFocus</td></tr>
+</tbody></table>
+<p>TwoWay와 LostFocus를 함께 쓰면 양방향이지만 입력 중에는 소스 값이 유지됩니다. Name이 &quot;김&quot;일 때 &quot;김현우&quot;를 입력하면 PropertyChanged는 입력에 따라 반영하고, LostFocus는 포커스가 빠질 때, Explicit은 코드 호출 때 반영합니다. 변환·검증이 성공하는 일반적인 입력을 전제로 한 예입니다.</p>
+<div class="code-block"><pre><code>nameTextBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();</code></pre></div>
+<p>UpdateSourceTrigger는 TwoWay·OneWayToSource의 소스 갱신 시점을 정합니다. INotifyPropertyChanged는 소스 변경을 화면에 알리는 별도 장치입니다. 일반 CLR 속성은 이 알림이 있어야 코드에서 바꾼 값이 화면에 반영됩니다. 실시간 검색에는 PropertyChanged가 유용하지만 소스 반영이 곧 DB 저장은 아닙니다.</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/">공식 근거: WPF 데이터 바인딩</a></p>
+<h3>5. [ ]는 C# 특성(Attribute)</h3>
+<div class="code-block"><pre><code>[ObservableProperty]
+[NotifyDataErrorInfo]
+[Range(10, 5000, ErrorMessage = &quot;노출 시간은 10~5000 μs&quot;)]
+[NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+private int _exposureUs = 800;</code></pre></div>
+<p>대괄호로 선언하는 것은 특성(Attribute)입니다. 컴파일러·소스 생성기·프레임워크가 읽는 메타데이터를 붙입니다. 모든 특성이 스스로 코드를 실행하는 것은 아닙니다.</p>
+<table class="whiteboard-data"><thead><tr><th scope="col">특성</th><th scope="col">이 코드에서의 역할</th></tr></thead><tbody>
+<tr><td data-label="특성">ObservableProperty</td><td data-label="이 코드에서의 역할">ExposureUs 프로퍼티와 변경 알림 코드 생성</td></tr>
+<tr><td data-label="특성">NotifyDataErrorInfo</td><td data-label="이 코드에서의 역할">생성 프로퍼티가 변경되면 유효성 검사 요청</td></tr>
+<tr><td data-label="특성">Range(10, 5000, …)</td><td data-label="이 코드에서의 역할">10~5000 범위 검증 및 오류 메시지</td></tr>
+<tr><td data-label="특성">NotifyCanExecuteChangedFor</td><td data-label="이 코드에서의 역할">SaveCommand의 실행 가능 여부 재평가 알림</td></tr>
+</tbody></table>
+<p>필드 방식의 소스 생성에는 partial 클래스가 필요합니다. 이 검증 조합은 ObservableValidator 상속을 전제로 하며 SaveCommand는 IRelayCommand 계열이어야 합니다. nameof(SaveCommand)는 이름을 문자열로 얻습니다. 바인딩은 private 필드가 아니라 생성된 ExposureUs를 대상으로 합니다.</p>
+<p>Range는 값을 강제로 보정하거나 대입을 막지 않습니다. 잘못된 값과 오류 상태가 남을 수 있습니다. 저장 가능 조건(CanExecute)을 따로 정의해야 하며 재평가 알림만으로 버튼이 비활성화되지는 않습니다. _exposureUs 직접 대입은 생성 setter를 우회합니다. 초기값 대입도 변경 검증을 실행하지 않습니다.</p>
+<div class="code-block"><pre><code>TextBox 입력
+  → UpdateSourceTrigger 시점에 ExposureUs setter
+  → 값 변경 시 알림·검증·SaveCommand 재평가 요청
+  → CanExecute 조건에 따라 저장 버튼 상태 결정
+  → 사용자가 저장 실행 → 별도 저장 로직</code></pre></div>
+<p>위 흐름은 개념 요약이며 생성 코드의 정확한 호출 순서를 표현하지 않습니다. 숫자로 변환할 수 없는 TextBox 입력은 int setter에 도달하지 않을 수 있으므로 UI 변환 오류와 Range 오류도 구분합니다.</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/generators/observableproperty">공식 근거: CommunityToolkit.Mvvm ObservableProperty</a></p>
+</section>
 
         <section id="enclony-mvvm">
           <h2>MVVM·Prism 질문 대응</h2>
