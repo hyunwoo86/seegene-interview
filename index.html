@@ -809,6 +809,7 @@
             <a href="#pcr-basic">PCR 쉬운 설명</a>
             <a href="#pcr">dRAST와 PCR 비교</a>
             <a href="#drast-whiteboard">dRAST 화이트보드·DB 구성</a>
+            <a href="#drast-flowchart">dRAST 검사 흐름도</a>
             <a href="#system-sequence">전체 로직·시퀀스</a>
             <a href="#ui-thread">버튼·UI 스레드</a>
             <a href="#design">시스템 설계 문제</a>
@@ -1147,6 +1148,17 @@
             <p>“검사 기록과 설정은 SQLite, 동작 파라미터는 JSON, 촬영 이미지는 영상 폴더, 명령과 오류는 로그 파일로 구분해 설명할 수 있습니다. 장비가 부족할 때는 제가 만든 Emulator로 명령·응답과 검사 순서를 먼저 확인하고, 실제 동작은 실장비에서 확인했습니다.”</p>
           </div>
           <p><strong>다음 질문이 나오면</strong>DB는 저장 시점·일관성, 통신은 응답과 실제 완료의 차이, 스케줄러는 공유 장비 충돌, 카메라는 프레임 수신과 초점 계산을 확대해서 그린다. 처음부터 모든 클래스와 예외를 한꺼번에 쓰지 않는다.</p>
+        </section>
+
+        <section id="drast-flowchart">
+          <h2>dRAST 검사 흐름도</h2>
+          <p class="lead">가운데에는 검사 순서, 왼쪽에는 촬영·분석 반복, 오른쪽에는 저장소와 장비 실행 조건·오류 분기를 그립니다.</p>
+          <figure class="whiteboard-figure">
+            <a href="assets/drast3-flowchart.png" target="_blank" rel="noopener"><img src="assets/drast3-flowchart.png" width="1400" height="1690" loading="lazy" alt="dRAST 검사 흐름도: 초기화, 등록, 분주, 배양, 촬영, 분석 후 최종 조건 미충족 시 배양으로 반복하고 충족 시 결과 저장과 배출. 오른쪽에 저장소 역할, 자원 대기와 오류 처리 분기 표시"></a>
+            <figcaption>이미지를 누르면 확대합니다. <a href="assets/drast3-flowchart.png" download>PNG 다운로드</a> · <a href="assets/drast3-flowchart.svg" target="_blank" rel="noopener">선명한 SVG 보기</a></figcaption>
+          </figure>
+          <div class="answer"><strong>그리면서 설명할 말</strong><br>“검사를 등록하면 분주하고 배양을 시작합니다. 촬영 시점마다 위치와 초점을 맞춰 영상을 저장하고 외부 분석 프로그램의 결과를 받습니다. 최종 판정 조건을 충족할 때까지 배양·촬영·분석을 반복한 뒤 결과를 저장하고 배출합니다. 이때 여러 검사가 같은 피펫이나 카메라를 동시에 쓰지 않도록 실행 조건과 공유 자원을 확인합니다. 장비가 명령을 받았다는 ACK와 실제 동작 완료도 구분합니다.”</div>
+          <div class="evidence"><strong>설명 범위</strong>면접용 개념 흐름도입니다. 장비 작업의 실행 조건은 각 단계에 공통으로 적용하며, 오른쪽 오류 화살표는 대표 분기입니다. SQLite·JSON의 정확한 저장 항목과 갱신 시점, 실제 최종 판정 조건, 오류별 자동 재개 가능 범위는 구현을 확인해 답합니다.</div>
         </section>
 
         <section id="system-sequence">
